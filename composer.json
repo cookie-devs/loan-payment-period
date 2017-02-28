@@ -1,0 +1,34 @@
+{
+  "name": "kaurikk/loan-payment-period",
+  "description": "[Loan payment period calculation library]",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Kauri Kont-Kontson"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Kauri\\Loan\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Kauri\\Loan\\Test\\": "tests/"
+    }
+  },
+  "require": {
+    "php": ">=7.1",
+    "kaurikk/loan-payment-schedule": "dev-master"
+  },
+  "require-dev": {
+    "phpunit/phpunit": ">=6.0"
+  },
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/kaurikk/loan-payment-schedule"
+    }
+  ]
+}

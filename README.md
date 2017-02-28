@@ -1,3 +1,5 @@
+[![Build Status](https://scrutinizer-ci.com/g/kaurikk/loan-payment-period/badges/build.png?b=master)](https://scrutinizer-ci.com/g/kaurikk/loan-payment-period/build-status/master) [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/kaurikk/loan-payment-period/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/kaurikk/loan-payment-period/?branch=master) [![Code Coverage](https://scrutinizer-ci.com/g/kaurikk/loan-payment-period/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/kaurikk/loan-payment-period/?branch=master)
+[![SensioLabsInsight](https://insight.sensiolabs.com/projects/0ed302ff-9e93-4445-8fc2-bcec227afa57/mini.png)](https://insight.sensiolabs.com/projects/0ed302ff-9e93-4445-8fc2-bcec227afa57)
 # loan-payment-period
 
 Library to generate loan payment periods based on payment schedule. Contains 3 main parts:
