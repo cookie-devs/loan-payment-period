@@ -29,4 +29,15 @@ interface PeriodInterface
      */
     public function getStart(): \DateTimeInterface;
 
+    /**
+     * @param int $sequenceNo
+     * @return mixed
+     */
+    public function setSequenceNo(int $sequenceNo);
+
+    /**
+     * @return int
+     */
+    public function getSequenceNo(): int;
+
 }

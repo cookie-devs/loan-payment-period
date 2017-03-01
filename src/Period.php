@@ -24,6 +24,11 @@ class Period implements PeriodInterface
     private $length;
 
     /**
+     * @var int
+     */
+    private $sequenceNo;
+
+    /**
      * Period constructor.
      * @param \DateTimeInterface $start
      * @param \DateTimeInterface $end
@@ -57,13 +62,34 @@ class Period implements PeriodInterface
     }
 
     /**
+     * @param $sequenceNo
+     * @return bool|int
+     */
+    public function setSequenceNo(int $sequenceNo)
+    {
+        if (is_null($this->sequenceNo)) {
+            $this->sequenceNo = $sequenceNo;
+        }
+
+        return $this->sequenceNo;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSequenceNo(): int
+    {
+        return (int)$this->sequenceNo;
+    }
+
+    /**
      * @param \DateTimeInterface $periodStart
      * @param \DateTimeInterface $periodEnd
      * @return int
      */
     private static function calculatePeriodLength(\DateTimeInterface $periodStart, \DateTimeInterface $periodEnd): int
     {
-        $diff = (int) $periodEnd->diff($periodStart)->days + 1;
+        $diff = (int)$periodEnd->diff($periodStart)->days + 1;
         return $diff;
     }
 
