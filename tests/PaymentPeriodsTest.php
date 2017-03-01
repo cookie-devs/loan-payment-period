@@ -41,7 +41,8 @@ class PaymentPeriodsTest extends TestCase
         $this->assertEquals($totalLength / $length,
             $periodsCollection->getNumberOfRemainingPeriods($period, $periodsCollection::CALCULATION_TYPE_EXACT));
         $this->assertEquals($noOfPayments,
-            $periodsCollection->getNumberOfRemainingPeriods($period, $periodsCollection::CALCULATION_TYPE_EXACT_INTEREST));
+            $periodsCollection->getNumberOfRemainingPeriods($period,
+                $periodsCollection::CALCULATION_TYPE_EXACT_INTEREST));
         $this->assertEquals($noOfPayments,
             $periodsCollection->getNumberOfRemainingPeriods($period, $periodsCollection::CALCULATION_TYPE_ANNUITY));
 

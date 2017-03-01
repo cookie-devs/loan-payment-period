@@ -30,15 +30,7 @@ class PaymentPeriods implements PaymentPeriodsInterface
     /**
      * @var int
      */
-    private $totalLength = 0;
-    /**
-     * @var int
-     */
     private $averagePeriod;
-    /**
-     * @var int
-     */
-    private $averageTotalLength;
 
     /**
      * PaymentPeriods constructor.
@@ -60,10 +52,7 @@ class PaymentPeriods implements PaymentPeriodsInterface
         }
 
         $period->setSequenceNo($sequenceNo);
-
         $this->periods[$sequenceNo] = $period;
-        $this->totalLength = $this->totalLength + $period->getLength();
-        $this->averageTotalLength = count($this->periods) * $this->averagePeriod;
     }
 
     /**

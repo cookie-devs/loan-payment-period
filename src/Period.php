@@ -79,7 +79,7 @@ class Period implements PeriodInterface
      */
     public function getSequenceNo(): int
     {
-        return (int)$this->sequenceNo;
+        return (int) $this->sequenceNo;
     }
 
     /**
@@ -89,7 +89,7 @@ class Period implements PeriodInterface
      */
     private static function calculatePeriodLength(\DateTimeInterface $periodStart, \DateTimeInterface $periodEnd): int
     {
-        $diff = (int)$periodEnd->diff($periodStart)->days + 1;
+        $diff = (int) $periodEnd->diff($periodStart)->days + 1;
         return $diff;
     }
 

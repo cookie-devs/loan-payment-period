@@ -39,12 +39,14 @@ class PaymentPeriodsFactoryTest extends TestCase
             $this->assertEquals($period->getStart()->format('Y-m-d'), $startDates[$no]);
             $this->assertEquals($period->getLength(), $periodLength[$no]);
 
-            $this->assertEquals($paymentPeriods->getNumberOfRemainingPeriods($period, $paymentPeriods::CALCULATION_TYPE_EXACT),
+            $this->assertEquals($paymentPeriods->getNumberOfRemainingPeriods($period,
+                $paymentPeriods::CALCULATION_TYPE_EXACT),
                 $numPeriods[$no]);
 
             $this->assertEquals($paymentPeriods->getNumberOfRemainingPeriods($period,
                 $paymentPeriods::CALCULATION_TYPE_EXACT_INTEREST), $noOfPayments - $no + 1);
-            $this->assertEquals($paymentPeriods->getNumberOfRemainingPeriods($period, $paymentPeriods::CALCULATION_TYPE_ANNUITY),
+            $this->assertEquals($paymentPeriods->getNumberOfRemainingPeriods($period,
+                $paymentPeriods::CALCULATION_TYPE_ANNUITY),
                 $noOfPayments - $no + 1);
         }
     }
