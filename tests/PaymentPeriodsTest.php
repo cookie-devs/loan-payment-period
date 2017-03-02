@@ -39,22 +39,22 @@ class PaymentPeriodsTest extends TestCase
         $this->assertTrue(!empty($periodsCollection->getPeriods()));
 
         $this->assertEquals($totalLength / $length,
-            $periodsCollection->getNumberOfRemainingPeriods($period, $periodsCollection::CALCULATION_TYPE_EXACT));
+            $periodsCollection->getNumberOfRemainingPeriods($period, $periodsCollection::CALCULATION_MODE_EXACT));
         $this->assertEquals($noOfPayments,
             $periodsCollection->getNumberOfRemainingPeriods($period,
-                $periodsCollection::CALCULATION_TYPE_EXACT_INTEREST));
+                $periodsCollection::CALCULATION_MODE_EXACT_INTEREST));
         $this->assertEquals($noOfPayments,
-            $periodsCollection->getNumberOfRemainingPeriods($period, $periodsCollection::CALCULATION_TYPE_ANNUITY));
+            $periodsCollection->getNumberOfRemainingPeriods($period, $periodsCollection::CALCULATION_MODE_AVERAGE));
 
         $this->assertEquals($length,
             $periodsCollection->getRatePerPeriod($period, 360,
-                $periodsCollection::CALCULATION_TYPE_EXACT));
+                $periodsCollection::CALCULATION_MODE_EXACT));
         $this->assertEquals($length,
             $periodsCollection->getRatePerPeriod($period, 360,
-                $periodsCollection::CALCULATION_TYPE_EXACT_INTEREST));
+                $periodsCollection::CALCULATION_MODE_EXACT_INTEREST));
         $this->assertEquals($averagePeriodLength,
             $periodsCollection->getRatePerPeriod($period, 360,
-                $periodsCollection::CALCULATION_TYPE_ANNUITY));
+                $periodsCollection::CALCULATION_MODE_AVERAGE));
     }
 
     /**

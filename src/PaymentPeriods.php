@@ -11,19 +11,6 @@ namespace Kauri\Loan;
 class PaymentPeriods implements PaymentPeriodsInterface
 {
     /**
-     * Exact payment with exact interest
-     */
-    const CALCULATION_TYPE_EXACT = 1;
-    /**
-     * Annuity payment with exact interest
-     */
-    const CALCULATION_TYPE_EXACT_INTEREST = 2;
-    /**
-     * Annuity payment with annuity interest
-     */
-    const CALCULATION_TYPE_ANNUITY = 3;
-
-    /**
      * @var array
      */
     private $periods = array();
@@ -65,14 +52,14 @@ class PaymentPeriods implements PaymentPeriodsInterface
     public function getRatePerPeriod(
         PeriodInterface $period,
         float $yearlyInterestRate,
-        int $calculationType = self::CALCULATION_TYPE_ANNUITY
+        int $calculationType = self::CALCULATION_MODE_AVERAGE
     ): float {
         switch ($calculationType) {
-            case self::CALCULATION_TYPE_EXACT:
-            case self::CALCULATION_TYPE_EXACT_INTEREST:
+            case self::CALCULATION_MODE_EXACT:
+            case self::CALCULATION_MODE_EXACT_INTEREST:
                 $currentPeriod = $period->getLength();
                 break;
-            case self::CALCULATION_TYPE_ANNUITY:
+            case self::CALCULATION_MODE_AVERAGE:
                 $currentPeriod = $this->averagePeriod;
                 break;
             default:
@@ -92,15 +79,15 @@ class PaymentPeriods implements PaymentPeriodsInterface
      */
     public function getNumberOfRemainingPeriods(
         PeriodInterface $period,
-        int $calculationType = self::CALCULATION_TYPE_ANNUITY
+        int $calculationType = self::CALCULATION_MODE_AVERAGE
     ): float {
         switch ($calculationType) {
-            case self::CALCULATION_TYPE_EXACT:
+            case self::CALCULATION_MODE_EXACT:
                 $currentPeriod = $period->getLength();
                 $totalPeriods = $this->getExactRemainingPeriodsLength($period);
                 break;
-            case self::CALCULATION_TYPE_EXACT_INTEREST:
-            case self::CALCULATION_TYPE_ANNUITY:
+            case self::CALCULATION_MODE_EXACT_INTEREST:
+            case self::CALCULATION_MODE_AVERAGE:
                 $currentPeriod = $this->averagePeriod;
                 $totalPeriods = $this->getAverageRemainingPeriodsLength($period);
                 break;

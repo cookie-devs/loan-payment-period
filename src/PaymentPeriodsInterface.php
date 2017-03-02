@@ -11,6 +11,19 @@ namespace Kauri\Loan;
 interface PaymentPeriodsInterface
 {
     /**
+     * Exact payment with exact interest
+     */
+    const CALCULATION_MODE_EXACT = 1;
+    /**
+     * Annuity payment with exact interest
+     */
+    const CALCULATION_MODE_EXACT_INTEREST = 2;
+    /**
+     * Annuity payment with annuity interest
+     */
+    const CALCULATION_MODE_AVERAGE = 3;
+
+    /**
      * PaymentPeriodsInterface constructor.
      * @param int $averagePeriod
      */
