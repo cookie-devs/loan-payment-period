@@ -46,18 +46,26 @@ class PaymentPeriods implements PaymentPeriodsInterface
      * @param PeriodInterface $period
      * @param float $yearlyInterestRate
      * @param int $calculationType
+     * @param int $calculateFor
      * @return float
      * @throws \Exception
      */
     public function getRatePerPeriod(
         PeriodInterface $period,
         float $yearlyInterestRate,
-        int $calculationType = self::CALCULATION_MODE_AVERAGE
+        int $calculationType = self::CALCULATION_MODE_AVERAGE,
+        int $calculateFor = self::CALCULATE_FOR_INTEREST
     ): float {
         switch ($calculationType) {
             case self::CALCULATION_MODE_EXACT:
-            case self::CALCULATION_MODE_EXACT_INTEREST:
                 $currentPeriod = $period->getLength();
+                break;
+            case self::CALCULATION_MODE_EXACT_INTEREST:
+                if ($calculateFor == self::CALCULATE_FOR_INTEREST) {
+                    $currentPeriod = $period->getLength();
+                } else {
+                    $currentPeriod = $this->averagePeriod;
+                }
                 break;
             case self::CALCULATION_MODE_AVERAGE:
                 $currentPeriod = $this->averagePeriod;
@@ -74,12 +82,14 @@ class PaymentPeriods implements PaymentPeriodsInterface
     /**
      * @param PeriodInterface $period
      * @param int $calculationType
-     * @return float|int
+     * @param int $calculateFor
+     * @return float
      * @throws \Exception
      */
     public function getNumberOfRemainingPeriods(
         PeriodInterface $period,
-        int $calculationType = self::CALCULATION_MODE_AVERAGE
+        int $calculationType = self::CALCULATION_MODE_AVERAGE,
+        int $calculateFor = self::CALCULATE_FOR_PAYMENT
     ): float {
         switch ($calculationType) {
             case self::CALCULATION_MODE_EXACT:
@@ -87,6 +97,14 @@ class PaymentPeriods implements PaymentPeriodsInterface
                 $totalPeriods = $this->getExactRemainingPeriodsLength($period);
                 break;
             case self::CALCULATION_MODE_EXACT_INTEREST:
+                if ($calculateFor == self::CALCULATE_FOR_PAYMENT) {
+                    $currentPeriod = $this->averagePeriod;
+                    $totalPeriods = $this->getAverageRemainingPeriodsLength($period);
+                } else {
+                    $currentPeriod = $period->getLength();
+                    $totalPeriods = $this->getExactRemainingPeriodsLength($period);
+                }
+                break;
             case self::CALCULATION_MODE_AVERAGE:
                 $currentPeriod = $this->averagePeriod;
                 $totalPeriods = $this->getAverageRemainingPeriodsLength($period);

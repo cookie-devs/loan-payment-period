@@ -23,6 +23,10 @@ interface PaymentPeriodsInterface
      */
     const CALCULATION_MODE_AVERAGE = 3;
 
+    const CALCULATE_FOR_PAYMENT = 4;
+
+    const CALCULATE_FOR_INTEREST = 5;
+
     /**
      * PaymentPeriodsInterface constructor.
      * @param int $averagePeriod
