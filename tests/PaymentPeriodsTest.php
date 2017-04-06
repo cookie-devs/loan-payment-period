@@ -5,6 +5,7 @@ namespace Kauri\Loan\Test;
 
 use Kauri\Loan\PaymentPeriods;
 use Kauri\Loan\Period;
+use Kauri\Loan\PeriodInterface;
 use PHPUnit\Framework\TestCase;
 
 
@@ -20,7 +21,6 @@ class PaymentPeriodsTest extends TestCase
         $periodsCollection = new PaymentPeriods($averagePeriodLength);
         $noOfPayments = count($paymentPeriods);
         $totalLength = 0;
-        $periodLength = 0;
 
         $this->assertEquals(0, $periodsCollection->getNoOfPeriods());
         $this->assertTrue(empty($periodsCollection->getPeriods()));
@@ -77,8 +77,8 @@ class PaymentPeriodsTest extends TestCase
 
         foreach ($periods as $p) {
             array_pop($reversedPeriods);
-            $exactPeriodsLength = $periodsCollection->getExactPeriodsLength($p);
-            $averagePeriodsLength = $periodsCollection->getAveragePeriodsLength($p);
+            $exactPeriodsLength = $periodsCollection->getExactPeriodsLength();
+            $averagePeriodsLength = $periodsCollection->getAveragePeriodsLength();
 
             $this->assertEquals($exactPeriodsLength, array_sum($paymentPeriods));
             $this->assertEquals($averagePeriodsLength, $averagePeriodLength * count($paymentPeriods));
@@ -111,6 +111,10 @@ class PaymentPeriodsTest extends TestCase
         $periodsCollection->getNumberOfPeriods($this->getMockPeriod(3), 10);
     }
 
+    /**
+     * @param $length
+     * @return PeriodInterface
+     */
     private function getMockPeriod($length)
     {
         $stub = $this->getMockBuilder(Period::class)

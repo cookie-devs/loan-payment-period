@@ -58,17 +58,9 @@ class PaymentPeriods implements PaymentPeriodsInterface
     ): float {
         switch ($calculationType) {
             case self::CALCULATION_MODE_EXACT:
-                $currentPeriod = $period->getLength();
-                break;
             case self::CALCULATION_MODE_EXACT_INTEREST:
-                if ($calculateFor == self::CALCULATE_FOR_INTEREST) {
-                    $currentPeriod = $period->getLength();
-                } else {
-                    $currentPeriod = $this->averagePeriod;
-                }
-                break;
             case self::CALCULATION_MODE_AVERAGE:
-                $currentPeriod = $this->averagePeriod;
+                $currentPeriod = $this->getCurrentPeriod($period, $calculationType, $calculateFor);
                 break;
             default:
                 throw new \Exception('Calculation type not implemented');
@@ -77,6 +69,19 @@ class PaymentPeriods implements PaymentPeriodsInterface
         $ratePerPeriod = $yearlyInterestRate / 360 * $currentPeriod;
 
         return $ratePerPeriod;
+    }
+
+    private function getCurrentPeriod($period, int $calculationType, int $calculateFor)
+    {
+        if ($calculationType == self::CALCULATION_MODE_EXACT) {
+            return $period->getLength();
+        }
+
+        if ($calculateFor == self::CALCULATE_FOR_INTEREST && $calculationType == self::CALCULATION_MODE_EXACT_INTEREST) {
+            return $period->getLength();
+        }
+
+        return $this->averagePeriod;
     }
 
     /**
