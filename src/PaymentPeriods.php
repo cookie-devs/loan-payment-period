@@ -71,19 +71,6 @@ class PaymentPeriods implements PaymentPeriodsInterface
         return $ratePerPeriod;
     }
 
-    private function getCurrentPeriod($period, int $calculationType, int $calculateFor)
-    {
-        if ($calculationType == self::CALCULATION_MODE_EXACT) {
-            return $period->getLength();
-        }
-
-        if ($calculateFor == self::CALCULATE_FOR_INTEREST && $calculationType == self::CALCULATION_MODE_EXACT_INTEREST) {
-            return $period->getLength();
-        }
-
-        return $this->averagePeriod;
-    }
-
     /**
      * @param PeriodInterface $period
      * @param int $calculationType
@@ -98,25 +85,15 @@ class PaymentPeriods implements PaymentPeriodsInterface
     ): float {
         switch ($calculationType) {
             case self::CALCULATION_MODE_EXACT:
-                $currentPeriod = $period->getLength();
-                $totalPeriods = $this->getExactPeriodsLength();
-                break;
             case self::CALCULATION_MODE_EXACT_INTEREST:
-                if ($calculateFor == self::CALCULATE_FOR_PAYMENT) {
-                    $currentPeriod = $this->averagePeriod;
-                    $totalPeriods = $this->getAveragePeriodsLength();
-                } else {
-                    $currentPeriod = $period->getLength();
-                    $totalPeriods = $this->getExactPeriodsLength();
-                }
-                break;
             case self::CALCULATION_MODE_AVERAGE:
-                $currentPeriod = $this->averagePeriod;
-                $totalPeriods = $this->getAveragePeriodsLength();
+                $totalPeriods = $this->getTotalPeriods($calculationType, $calculateFor);
                 break;
             default:
                 throw new \Exception('Calculation type not implemented');
         }
+
+        $currentPeriod = $this->getCurrentPeriod($period, $calculationType, $calculateFor);
 
         $numberOfPeriods = $totalPeriods / $currentPeriod;
 
@@ -164,6 +141,43 @@ class PaymentPeriods implements PaymentPeriodsInterface
     public function getNoOfPeriods(): int
     {
         return count($this->periods);
+    }
+
+    /**
+     * @param PeriodInterface $period
+     * @param int $calculationType
+     * @param int $calculateFor
+     * @return int
+     */
+    private function getCurrentPeriod(PeriodInterface $period, int $calculationType, int $calculateFor)
+    {
+        if ($calculationType == self::CALCULATION_MODE_EXACT) {
+            return $period->getLength();
+        }
+
+        if ($calculateFor == self::CALCULATE_FOR_INTEREST && $calculationType == self::CALCULATION_MODE_EXACT_INTEREST) {
+            return $period->getLength();
+        }
+
+        return $this->averagePeriod;
+    }
+
+    /**
+     * @param int $calculationType
+     * @param int $calculateFor
+     * @return int
+     */
+    private function getTotalPeriods(int $calculationType, int $calculateFor)
+    {
+        if ($calculationType == self::CALCULATION_MODE_EXACT) {
+            return $this->getExactPeriodsLength();
+        }
+
+        if ($calculateFor == self::CALCULATE_FOR_INTEREST && $calculationType == self::CALCULATION_MODE_EXACT_INTEREST) {
+            return $this->getExactPeriodsLength();
+        }
+
+        return $this->getAveragePeriodsLength();
     }
 
 
