@@ -39,15 +39,15 @@ class PaymentPeriodsFactoryTest extends TestCase
             $this->assertEquals($period->getStart()->format('Y-m-d'), $startDates[$no]);
             $this->assertEquals($period->getLength(), $periodLength[$no]);
 
-            $this->assertEquals($paymentPeriods->getNumberOfRemainingPeriods($period,
+            $this->assertEquals($paymentPeriods->getNumberOfPeriods($period,
                 $paymentPeriods::CALCULATION_MODE_EXACT),
                 $numPeriods[$no]);
 
-            $this->assertEquals($paymentPeriods->getNumberOfRemainingPeriods($period,
-                $paymentPeriods::CALCULATION_MODE_EXACT_INTEREST), $noOfPayments - $no + 1);
-            $this->assertEquals($paymentPeriods->getNumberOfRemainingPeriods($period,
+            $this->assertEquals($paymentPeriods->getNumberOfPeriods($period,
+                $paymentPeriods::CALCULATION_MODE_EXACT_INTEREST), $noOfPayments);
+            $this->assertEquals($paymentPeriods->getNumberOfPeriods($period,
                 $paymentPeriods::CALCULATION_MODE_AVERAGE),
-                $noOfPayments - $no + 1);
+                $noOfPayments);
         }
     }
 
@@ -61,7 +61,7 @@ class PaymentPeriodsFactoryTest extends TestCase
                 [1 => "2000-01-02", "2000-01-03", "2000-01-04"],
                 [1 => "2000-01-02", "2000-01-03", "2000-01-04"],
                 [1 => 1, 1, 1],
-                [1 => 3 / 1, 2 / 1, 1 / 1]
+                [1 => 3 / 1, 3 / 1, 3 / 1]
             ],
             'P3D' => [
                 3,
@@ -70,7 +70,7 @@ class PaymentPeriodsFactoryTest extends TestCase
                 [1 => "2000-01-04", "2000-01-07", "2000-01-10"],
                 [1 => "2000-01-02", "2000-01-05", "2000-01-08"],
                 [1 => 3, 3, 3],
-                [1 => 9 / 3, 6 / 3, 3 / 3]
+                [1 => 9 / 3, 9 / 3, 9 / 3]
             ],
             'P1M' => [
                 3,
@@ -79,7 +79,7 @@ class PaymentPeriodsFactoryTest extends TestCase
                 [1 => "2000-02-01", "2000-03-01", "2000-04-01"],
                 [1 => "2000-01-02", "2000-02-02", "2000-03-02"],
                 [1 => 31, 29, 31],
-                [1 => 91 / 31, 60 / 29, 31 / 31]
+                [1 => 91 / 31, 91 / 29, 91 / 31]
             ],
         ];
     }
