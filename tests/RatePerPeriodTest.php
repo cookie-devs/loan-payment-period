@@ -30,23 +30,40 @@ class RatePerPeriodTest extends TestCase
      * @param $calculateFor
      * @param $expected
      */
-    public function testGetNumberOfRemainingPeriods($calculationMode, $calculateFor, $expected)
+    public function testGetNumberOfPeriods($calculationMode, $calculateFor, $expected)
     {
         $periods = $this->periodsData();
 
         foreach ($periods->getPeriods() as $k => $p) {
-            $this->assertEquals($expected[$k], $periods->getNumberOfRemainingPeriods($p, $calculationMode, $calculateFor));
+            $this->assertEquals($k, $p->getSequenceNo());
+            $this->assertEquals($expected[$k], $periods->getNumberOfPeriods($p, $calculationMode, $calculateFor));
         }
     }
 
     public function expectedRateData()
     {
         return [
-            [PaymentPeriods::CALCULATION_MODE_AVERAGE, PaymentPeriods::CALCULATE_FOR_PAYMENT, [1 => 30, 30, 30, 30, 30]],
-            [PaymentPeriods::CALCULATION_MODE_EXACT_INTEREST, PaymentPeriods::CALCULATE_FOR_PAYMENT, [1 => 30, 30, 30, 30, 30]],
+            [
+                PaymentPeriods::CALCULATION_MODE_AVERAGE,
+                PaymentPeriods::CALCULATE_FOR_PAYMENT,
+                [1 => 30, 30, 30, 30, 30]
+            ],
+            [
+                PaymentPeriods::CALCULATION_MODE_EXACT_INTEREST,
+                PaymentPeriods::CALCULATE_FOR_PAYMENT,
+                [1 => 30, 30, 30, 30, 30]
+            ],
             [PaymentPeriods::CALCULATION_MODE_EXACT, PaymentPeriods::CALCULATE_FOR_PAYMENT, [1 => 31, 29, 31, 30, 31]],
-            [PaymentPeriods::CALCULATION_MODE_AVERAGE, PaymentPeriods::CALCULATE_FOR_INTEREST, [1 => 30, 30, 30, 30, 30]],
-            [PaymentPeriods::CALCULATION_MODE_EXACT_INTEREST, PaymentPeriods::CALCULATE_FOR_INTEREST, [1 => 31, 29, 31, 30, 31]],
+            [
+                PaymentPeriods::CALCULATION_MODE_AVERAGE,
+                PaymentPeriods::CALCULATE_FOR_INTEREST,
+                [1 => 30, 30, 30, 30, 30]
+            ],
+            [
+                PaymentPeriods::CALCULATION_MODE_EXACT_INTEREST,
+                PaymentPeriods::CALCULATE_FOR_INTEREST,
+                [1 => 31, 29, 31, 30, 31]
+            ],
             [PaymentPeriods::CALCULATION_MODE_EXACT, PaymentPeriods::CALCULATE_FOR_INTEREST, [1 => 31, 29, 31, 30, 31]]
         ];
     }
@@ -55,11 +72,27 @@ class RatePerPeriodTest extends TestCase
     {
         return [
             [PaymentPeriods::CALCULATION_MODE_AVERAGE, PaymentPeriods::CALCULATE_FOR_PAYMENT, [1 => 5, 5, 5, 5, 5]],
-            [PaymentPeriods::CALCULATION_MODE_EXACT_INTEREST, PaymentPeriods::CALCULATE_FOR_PAYMENT, [1 => 5, 5, 5, 5, 5]],
-            [PaymentPeriods::CALCULATION_MODE_EXACT, PaymentPeriods::CALCULATE_FOR_PAYMENT, [1 => 152/31, 152/29, 152/31, 152/30, 152/31]],
+            [
+                PaymentPeriods::CALCULATION_MODE_EXACT_INTEREST,
+                PaymentPeriods::CALCULATE_FOR_PAYMENT,
+                [1 => 5, 5, 5, 5, 5]
+            ],
+            [
+                PaymentPeriods::CALCULATION_MODE_EXACT,
+                PaymentPeriods::CALCULATE_FOR_PAYMENT,
+                [1 => 152 / 31, 152 / 29, 152 / 31, 152 / 30, 152 / 31]
+            ],
             [PaymentPeriods::CALCULATION_MODE_AVERAGE, PaymentPeriods::CALCULATE_FOR_INTEREST, [1 => 5, 5, 5, 5, 5]],
-            [PaymentPeriods::CALCULATION_MODE_EXACT_INTEREST, PaymentPeriods::CALCULATE_FOR_INTEREST, [1 => 152/31, 152/29, 152/31, 152/30, 152/31]],
-            [PaymentPeriods::CALCULATION_MODE_EXACT, PaymentPeriods::CALCULATE_FOR_INTEREST,  [1 => 152/31, 152/29, 152/31, 152/30, 152/31]]
+            [
+                PaymentPeriods::CALCULATION_MODE_EXACT_INTEREST,
+                PaymentPeriods::CALCULATE_FOR_INTEREST,
+                [1 => 152 / 31, 152 / 29, 152 / 31, 152 / 30, 152 / 31]
+            ],
+            [
+                PaymentPeriods::CALCULATION_MODE_EXACT,
+                PaymentPeriods::CALCULATE_FOR_INTEREST,
+                [1 => 152 / 31, 152 / 29, 152 / 31, 152 / 30, 152 / 31]
+            ]
         ];
     }
 

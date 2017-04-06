@@ -86,7 +86,7 @@ class PaymentPeriods implements PaymentPeriodsInterface
      * @return float
      * @throws \Exception
      */
-    public function getNumberOfRemainingPeriods(
+    public function getNumberOfPeriods(
         PeriodInterface $period,
         int $calculationType = self::CALCULATION_MODE_AVERAGE,
         int $calculateFor = self::CALCULATE_FOR_PAYMENT
@@ -94,38 +94,35 @@ class PaymentPeriods implements PaymentPeriodsInterface
         switch ($calculationType) {
             case self::CALCULATION_MODE_EXACT:
                 $currentPeriod = $period->getLength();
-                $totalPeriods = $this->getExactRemainingPeriodsLength($period);
+                $totalPeriods = $this->getExactPeriodsLength();
                 break;
             case self::CALCULATION_MODE_EXACT_INTEREST:
                 if ($calculateFor == self::CALCULATE_FOR_PAYMENT) {
                     $currentPeriod = $this->averagePeriod;
-                    $totalPeriods = $this->getAverageRemainingPeriodsLength($period);
+                    $totalPeriods = $this->getAveragePeriodsLength();
                 } else {
                     $currentPeriod = $period->getLength();
-                    $totalPeriods = $this->getExactRemainingPeriodsLength($period);
+                    $totalPeriods = $this->getExactPeriodsLength();
                 }
                 break;
             case self::CALCULATION_MODE_AVERAGE:
                 $currentPeriod = $this->averagePeriod;
-                $totalPeriods = $this->getAverageRemainingPeriodsLength($period);
+                $totalPeriods = $this->getAveragePeriodsLength();
                 break;
             default:
                 throw new \Exception('Calculation type not implemented');
         }
 
-        //$numberOfPeriods = ($currentPeriod + $totalPeriods) / $currentPeriod;
         $numberOfPeriods = $totalPeriods / $currentPeriod;
 
         return $numberOfPeriods;
     }
 
     /**
-     * @param PeriodInterface $currentPeriod
      * @return int
      */
-    public function getExactRemainingPeriodsLength(PeriodInterface $currentPeriod)
+    public function getExactPeriodsLength()
     {
-        //$followingPeriods = $this->getFollowingPeriods($currentPeriod->getSequenceNo());
         $followingPeriods = $this->getPeriods();
         $remainingPeriodsLength = 0;
 
@@ -138,33 +135,14 @@ class PaymentPeriods implements PaymentPeriodsInterface
     }
 
     /**
-     * @param PeriodInterface $currentPeriod
      * @return int
      */
-    public function getAverageRemainingPeriodsLength(PeriodInterface $currentPeriod)
+    public function getAveragePeriodsLength()
     {
-        //$followingPeriods = $this->getFollowingPeriods($currentPeriod->getSequenceNo());
         $followingPeriods = $this->getPeriods();
         $remainingPeriodsLength = $this->averagePeriod * count($followingPeriods);
 
         return $remainingPeriodsLength;
-    }
-
-    /**
-     * @param int $currentPeriodSequenceNo
-     * @return array
-     */
-    private function getFollowingPeriods(int $currentPeriodSequenceNo): array
-    {
-        $followingPeriods = array();
-
-        foreach ($this->getPeriods() as $period) {
-            if ($period->getSequenceNo() > $currentPeriodSequenceNo) {
-                array_push($followingPeriods, $period);
-            }
-        }
-
-        return $followingPeriods;
     }
 
     /**

@@ -39,12 +39,12 @@ class PaymentPeriodsTest extends TestCase
         $this->assertTrue(!empty($periodsCollection->getPeriods()));
 
         $this->assertEquals($totalLength / $length,
-            $periodsCollection->getNumberOfRemainingPeriods($period, $periodsCollection::CALCULATION_MODE_EXACT));
+            $periodsCollection->getNumberOfPeriods($period, $periodsCollection::CALCULATION_MODE_EXACT));
         $this->assertEquals($noOfPayments,
-            $periodsCollection->getNumberOfRemainingPeriods($period,
+            $periodsCollection->getNumberOfPeriods($period,
                 $periodsCollection::CALCULATION_MODE_EXACT_INTEREST));
         $this->assertEquals($noOfPayments,
-            $periodsCollection->getNumberOfRemainingPeriods($period, $periodsCollection::CALCULATION_MODE_AVERAGE));
+            $periodsCollection->getNumberOfPeriods($period, $periodsCollection::CALCULATION_MODE_AVERAGE));
 
         $this->assertEquals($length,
             $periodsCollection->getRatePerPeriod($period, 360,
@@ -62,7 +62,7 @@ class PaymentPeriodsTest extends TestCase
      * @param int $averagePeriodLength
      * @param array $paymentPeriods
      */
-    public function testRemainingPeriod(int $averagePeriodLength, array $paymentPeriods)
+    public function testPeriod(int $averagePeriodLength, array $paymentPeriods)
     {
         $periodsCollection = new PaymentPeriods($averagePeriodLength);
 
@@ -77,11 +77,11 @@ class PaymentPeriodsTest extends TestCase
 
         foreach ($periods as $p) {
             array_pop($reversedPeriods);
-            $exactRemainingPeriodsLength = $periodsCollection->getExactRemainingPeriodsLength($p);
-            $averageRemainingPeriodsLength = $periodsCollection->getAverageRemainingPeriodsLength($p);
+            $exactPeriodsLength = $periodsCollection->getExactPeriodsLength($p);
+            $averagePeriodsLength = $periodsCollection->getAveragePeriodsLength($p);
 
-            $this->assertEquals($exactRemainingPeriodsLength, array_sum($paymentPeriods));
-            $this->assertEquals($averageRemainingPeriodsLength, $averagePeriodLength * count($paymentPeriods));
+            $this->assertEquals($exactPeriodsLength, array_sum($paymentPeriods));
+            $this->assertEquals($averagePeriodsLength, $averagePeriodLength * count($paymentPeriods));
         }
     }
 
@@ -108,7 +108,7 @@ class PaymentPeriodsTest extends TestCase
     public function testNumberOfPeriodsException()
     {
         $periodsCollection = new PaymentPeriods(1);
-        $periodsCollection->getNumberOfRemainingPeriods($this->getMockPeriod(3), 10);
+        $periodsCollection->getNumberOfPeriods($this->getMockPeriod(3), 10);
     }
 
     private function getMockPeriod($length)

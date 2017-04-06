@@ -52,7 +52,7 @@ interface PaymentPeriodsInterface
      * @param int $calculationType
      * @return float|int
      */
-    public function getNumberOfRemainingPeriods(PeriodInterface $period, int $calculationType): float;
+    public function getNumberOfPeriods(PeriodInterface $period, int $calculationType): float;
 
     /**
      * @return array
