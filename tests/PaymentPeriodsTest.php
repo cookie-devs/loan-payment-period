@@ -80,8 +80,8 @@ class PaymentPeriodsTest extends TestCase
             $exactRemainingPeriodsLength = $periodsCollection->getExactRemainingPeriodsLength($p);
             $averageRemainingPeriodsLength = $periodsCollection->getAverageRemainingPeriodsLength($p);
 
-            $this->assertEquals($exactRemainingPeriodsLength, array_sum($reversedPeriods));
-            $this->assertEquals($averageRemainingPeriodsLength, $averagePeriodLength * count($reversedPeriods));
+            $this->assertEquals($exactRemainingPeriodsLength, array_sum($paymentPeriods));
+            $this->assertEquals($averageRemainingPeriodsLength, $averagePeriodLength * count($paymentPeriods));
         }
     }
 
