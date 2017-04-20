@@ -4,6 +4,7 @@ namespace Kauri\Loan\Test;
 
 
 use Kauri\Loan\PaymentPeriodsFactory;
+use Kauri\Loan\PaymentPeriodsInterface;
 use Kauri\Loan\PaymentScheduleConfig;
 use Kauri\Loan\PaymentScheduleFactory;
 use PHPUnit\Framework\TestCase;
@@ -18,8 +19,8 @@ class PaymentPeriodsFactoryTest extends TestCase
      * @param $dateIntervalPattern
      * @param array $endDates
      * @param array $startDates
-     * @param array $periodLength
-     * @param array $numPeriods
+     * @param array $expectedPeriodsLengthsExact
+     * @param array $expectedPeriodsLengthsAverage
      */
     public function testSomething(
         $noOfPayments,
@@ -27,8 +28,8 @@ class PaymentPeriodsFactoryTest extends TestCase
         $dateIntervalPattern,
         array $endDates,
         array $startDates,
-        array $periodLength,
-        array $numPeriods
+        array $expectedPeriodsLengthsExact,
+        array $expectedPeriodsLengthsAverage
     ) {
         $config = new PaymentScheduleConfig($noOfPayments, $startDate, $dateIntervalPattern);
         $schedule = PaymentScheduleFactory::generate($config);
@@ -37,17 +38,15 @@ class PaymentPeriodsFactoryTest extends TestCase
         foreach ($paymentPeriods->getPeriods() as $no => $period) {
             $this->assertEquals($period->getEnd()->format('Y-m-d'), $endDates[$no]);
             $this->assertEquals($period->getStart()->format('Y-m-d'), $startDates[$no]);
-            $this->assertEquals($period->getLength(), $periodLength[$no]);
+            $this->assertEquals($period->getLength(), $expectedPeriodsLengthsExact[$no]);
+        }
 
-            $this->assertEquals($paymentPeriods->getNumberOfPeriods($period,
-                $paymentPeriods::CALCULATION_MODE_EXACT),
-                $numPeriods[$no]);
+        foreach ($paymentPeriods->getPeriodsLengths(PaymentPeriodsInterface::CALCULATION_MODE_EXACT) as $k => $item) {
+            $this->assertEquals($expectedPeriodsLengthsExact[$k], $item);
+        }
 
-            $this->assertEquals($paymentPeriods->getNumberOfPeriods($period,
-                $paymentPeriods::CALCULATION_MODE_EXACT_INTEREST), $noOfPayments);
-            $this->assertEquals($paymentPeriods->getNumberOfPeriods($period,
-                $paymentPeriods::CALCULATION_MODE_AVERAGE),
-                $noOfPayments);
+        foreach ($paymentPeriods->getPeriodsLengths(PaymentPeriodsInterface::CALCULATION_MODE_AVERAGE) as $k => $item) {
+            $this->assertEquals($expectedPeriodsLengthsAverage[$k], $item);
         }
     }
 
@@ -61,7 +60,7 @@ class PaymentPeriodsFactoryTest extends TestCase
                 [1 => "2000-01-02", "2000-01-03", "2000-01-04"],
                 [1 => "2000-01-02", "2000-01-03", "2000-01-04"],
                 [1 => 1, 1, 1],
-                [1 => 3 / 1, 3 / 1, 3 / 1]
+                [1 => 1, 1, 1]
             ],
             'P3D' => [
                 3,
@@ -70,7 +69,7 @@ class PaymentPeriodsFactoryTest extends TestCase
                 [1 => "2000-01-04", "2000-01-07", "2000-01-10"],
                 [1 => "2000-01-02", "2000-01-05", "2000-01-08"],
                 [1 => 3, 3, 3],
-                [1 => 9 / 3, 9 / 3, 9 / 3]
+                [1 => 3, 3, 3]
             ],
             'P1M' => [
                 3,
@@ -79,7 +78,7 @@ class PaymentPeriodsFactoryTest extends TestCase
                 [1 => "2000-02-01", "2000-03-01", "2000-04-01"],
                 [1 => "2000-01-02", "2000-02-02", "2000-03-02"],
                 [1 => 31, 29, 31],
-                [1 => 91 / 31, 91 / 29, 91 / 31]
+                [1 => 30, 30, 30]
             ],
         ];
     }
