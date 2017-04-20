@@ -15,17 +15,9 @@ interface PaymentPeriodsInterface
      */
     const CALCULATION_MODE_EXACT = 1;
     /**
-     * Annuity payment with exact interest
-     */
-    const CALCULATION_MODE_EXACT_INTEREST = 2;
-    /**
      * Annuity payment with annuity interest
      */
-    const CALCULATION_MODE_AVERAGE = 3;
-
-    const CALCULATE_FOR_PAYMENT = 4;
-
-    const CALCULATE_FOR_INTEREST = 5;
+    const CALCULATION_MODE_AVERAGE = 2;
 
     /**
      * PaymentPeriodsInterface constructor.
@@ -40,19 +32,10 @@ interface PaymentPeriodsInterface
     public function add(PeriodInterface $period, int $sequenceNo = null): void;
 
     /**
-     * @param PeriodInterface $period
-     * @param float $yearlyInterestRate
-     * @param int $calculationType
-     * @return float
+     * @param int $calculationMode
+     * @return array
      */
-    public function getRatePerPeriod(PeriodInterface $period, float $yearlyInterestRate, int $calculationType): float;
-
-    /**
-     * @param PeriodInterface $period
-     * @param int $calculationType
-     * @return float|int
-     */
-    public function getNumberOfPeriods(PeriodInterface $period, int $calculationType): float;
+    public function getPeriodsLengths(int $calculationMode = self::CALCULATION_MODE_AVERAGE): array;
 
     /**
      * @return array

@@ -4,6 +4,7 @@ namespace Kauri\Loan\Test;
 
 
 use Kauri\Loan\PaymentPeriods;
+use Kauri\Loan\PaymentPeriodsInterface;
 use Kauri\Loan\Period;
 use Kauri\Loan\PeriodInterface;
 use PHPUnit\Framework\TestCase;
@@ -20,7 +21,6 @@ class PaymentPeriodsTest extends TestCase
     {
         $periodsCollection = new PaymentPeriods($averagePeriodLength);
         $noOfPayments = count($paymentPeriods);
-        $totalLength = 0;
 
         $this->assertEquals(0, $periodsCollection->getNoOfPeriods());
         $this->assertTrue(empty($periodsCollection->getPeriods()));
@@ -28,33 +28,18 @@ class PaymentPeriodsTest extends TestCase
         foreach ($paymentPeriods as $periodLength) {
             $periodMock = $this->getMockPeriod($periodLength);
             $periodsCollection->add($periodMock);
-            $totalLength = $totalLength + $periodLength;
         }
-
-        $periods = $periodsCollection->getPeriods();
-        $period = current($periods);
-        $length = $period->getLength();
 
         $this->assertEquals($noOfPayments, $periodsCollection->getNoOfPeriods());
         $this->assertTrue(!empty($periodsCollection->getPeriods()));
 
-        $this->assertEquals($totalLength / $length,
-            $periodsCollection->getNumberOfPeriods($period, $periodsCollection::CALCULATION_MODE_EXACT));
-        $this->assertEquals($noOfPayments,
-            $periodsCollection->getNumberOfPeriods($period,
-                $periodsCollection::CALCULATION_MODE_EXACT_INTEREST));
-        $this->assertEquals($noOfPayments,
-            $periodsCollection->getNumberOfPeriods($period, $periodsCollection::CALCULATION_MODE_AVERAGE));
+        foreach ($periodsCollection->getPeriodsLengths(PaymentPeriodsInterface::CALCULATION_MODE_AVERAGE) as $k => $periodLength) {
+            $this->assertEquals($averagePeriodLength, $periodLength);
+        }
 
-        $this->assertEquals($length,
-            $periodsCollection->getRatePerPeriod($period, 360,
-                $periodsCollection::CALCULATION_MODE_EXACT));
-        $this->assertEquals($length,
-            $periodsCollection->getRatePerPeriod($period, 360,
-                $periodsCollection::CALCULATION_MODE_EXACT_INTEREST));
-        $this->assertEquals($averagePeriodLength,
-            $periodsCollection->getRatePerPeriod($period, 360,
-                $periodsCollection::CALCULATION_MODE_AVERAGE));
+        foreach ($periodsCollection->getPeriodsLengths(PaymentPeriodsInterface::CALCULATION_MODE_EXACT) as $k => $periodLength) {
+            $this->assertEquals($paymentPeriods[$k], $periodLength);
+        }
     }
 
     /**
@@ -71,44 +56,20 @@ class PaymentPeriodsTest extends TestCase
             $periodsCollection->add($periodMock);
         }
 
-        $reversedPeriods = array_reverse($paymentPeriods);
-
         $periods = $periodsCollection->getPeriods();
 
-        foreach ($periods as $p) {
-            array_pop($reversedPeriods);
-            $exactPeriodsLength = $periodsCollection->getExactPeriodsLength();
-            $averagePeriodsLength = $periodsCollection->getAveragePeriodsLength();
-
-            $this->assertEquals($exactPeriodsLength, array_sum($paymentPeriods));
-            $this->assertEquals($averagePeriodsLength, $averagePeriodLength * count($paymentPeriods));
+        /** @var PeriodInterface $period */
+        foreach ($periods as $period) {
+            $this->assertEquals($paymentPeriods[$period->getSequenceNo()], $period->getLength());
         }
     }
 
     public function periodsData()
     {
         return [
-            [7, [6, 5, 3, 9]],
-            [30, [29, 30, 31, 30, 28]]
+            [7, [1 => 6, 5, 3, 9]],
+            [30, [1 => 29, 30, 31, 30, 28]]
         ];
-    }
-
-    /**
-     * @expectedException \Exception
-     */
-    public function testRatePerPeriodException()
-    {
-        $periodsCollection = new PaymentPeriods(1);
-        $periodsCollection->getRatePerPeriod($this->getMockPeriod(3), 10, 10);
-    }
-
-    /**
-     * @expectedException \Exception
-     */
-    public function testNumberOfPeriodsException()
-    {
-        $periodsCollection = new PaymentPeriods(1);
-        $periodsCollection->getNumberOfPeriods($this->getMockPeriod(3), 10);
     }
 
     /**
