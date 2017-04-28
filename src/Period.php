@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict_types = 1);
 
 namespace Kauri\Loan;
 
@@ -41,7 +41,7 @@ class Period implements PeriodInterface
     {
         $this->start = $start;
         $this->end = $end;
-        $this->exactLength = self::calculatePeriodLength($start, $end);
+        $this->exactLength = (float) self::calculatePeriodLength($start, $end);
         $this->avgLength = $avgLength;
     }
 

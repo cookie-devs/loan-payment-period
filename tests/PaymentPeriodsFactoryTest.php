@@ -4,7 +4,6 @@ namespace Kauri\Loan\Test;
 
 
 use Kauri\Loan\PaymentPeriodsFactory;
-use Kauri\Loan\PaymentPeriodsInterface;
 use Kauri\Loan\PaymentScheduleConfig;
 use Kauri\Loan\PaymentScheduleFactory;
 use Kauri\Loan\PeriodInterface;
@@ -43,6 +42,7 @@ class PaymentPeriodsFactoryTest extends TestCase
         foreach ($paymentPeriods->getPeriods() as $no => $period) {
             $this->assertEquals($period->getEnd()->format('Y-m-d'), $endDates[$no]);
             $this->assertEquals($period->getStart()->format('Y-m-d'), $startDates[$no]);
+            $this->assertEquals($no, $period->getSequenceNo());
 
             $this->assertEquals($expectedPeriodsLengthsExact[$no], $period->getLength($period::LENGTH_MODE_EXACT));
             $this->assertEquals($expectedPeriodsLengthsExact[$no], $period->getExactLength());

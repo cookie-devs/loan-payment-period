@@ -23,10 +23,20 @@ $periods = $paymentPeriods->getPeriods();
 
 // Get first period from Periods array
 $firstPeriod = current($periods);
-// How long is period (days)
-$firstPeriod->getLength();
+
 // Period start date
 $firstPeriod->getStart();
 // Period end date
 $firstPeriod->getEnd();
+```
+
+Periods can have two different type of length:
+ * Average: for monthly payements it's 30
+ * Exact: exact different between start and end of period (from 28 to 31 or even more is adjusting logic is used)
+```php
+// How long is period - average (days)
+$firstPeriod->getAvgLength();
+
+// How long is period - exact (days)
+$firstPeriod->getExactLength();
 ```

@@ -25,18 +25,20 @@ class PaymentPeriodsTest extends TestCase
         $this->assertTrue(empty($periodsCollection->getPeriods()));
 
         foreach ($paymentPeriods as $periodLength) {
-            $periodMock = $this->getMockPeriod($periodLength);
+            $periodMock = $this->getMockPeriod($periodLength, $averagePeriodLength);
             $periodsCollection->add($periodMock);
         }
 
         $this->assertEquals($noOfPayments, $periodsCollection->getNoOfPeriods());
         $this->assertTrue(!empty($periodsCollection->getPeriods()));
 
-        foreach ($periodsCollection as $k => $period) {
+        /**
+         * @var  $k
+         * @var PeriodInterface $period
+         */
+        foreach ($periodsCollection->getPeriods() as $no => $period) {
+            $this->assertEquals($no, $period->getSequenceNo());
             $this->assertEquals($averagePeriodLength, $period->getAvgLength());
-            $this->assertEquals($averagePeriodLength, $period->getLength($period::LENGTH_MODE_AVG));
-
-            $this->assertEquals($paymentPeriods[$period->getSequenceNo()], $period->getLength($period::LENGTH_MODE_EXACT));
             $this->assertEquals($paymentPeriods[$period->getSequenceNo()], $period->getExactLength());
         }
     }
@@ -53,15 +55,17 @@ class PaymentPeriodsTest extends TestCase
      * @param $length
      * @return PeriodInterface
      */
-    private function getMockPeriod($length)
+    private function getMockPeriod($length, $averagePeriodLength)
     {
         $stub = $this->getMockBuilder(Period::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getLength'])
+            ->setMethods(['getExactLength', 'getAvgLength'])
             ->getMock();
 
-        $stub->method('getLength')
+        $stub->method('getExactLength')
             ->willReturn($length);
+        $stub->method('getAvgLength')
+            ->willReturn($averagePeriodLength);
 
         return $stub;
     }
