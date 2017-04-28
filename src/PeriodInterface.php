@@ -1,23 +1,38 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Kauri\Loan;
 
 
 interface PeriodInterface
 {
+    const LENGTH_MODE_EXACT = 1;
+    const LENGTH_MODE_AVG = 2;
+
     /**
      * PeriodInterface constructor.
      * @param \DateTimeInterface $start
      * @param \DateTimeInterface $end
+     * @param float $avgLength
      */
-    public function __construct(\DateTimeInterface $start, \DateTimeInterface $end);
+    public function __construct(\DateTimeInterface $start, \DateTimeInterface $end, float $avgLength);
 
     /**
-     * @return int
+     * @param int $lengthMode
+     * @return float
      */
-    public function getLength(): int;
+    public function getLength(int $lengthMode): float;
+
+    /**
+     * @return float
+     */
+    public function getAvgLength(): float;
+
+    /**
+     * @return float
+     */
+    public function getExactLength(): float;
 
     /**
      * @return \DateTimeInterface

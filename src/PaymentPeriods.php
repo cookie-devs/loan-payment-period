@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Kauri\Loan;
 
@@ -21,11 +21,11 @@ class PaymentPeriods implements PaymentPeriodsInterface
 
     /**
      * PaymentPeriods constructor.
-     * @param int $averagePeriodLenght
+     * @param int $averagePeriodLength
      */
-    public function __construct(int $averagePeriodLenght)
+    public function __construct(int $averagePeriodLength)
     {
-        $this->averagePeriodLenght = $averagePeriodLenght;
+        $this->averagePeriodLenght = $averagePeriodLength;
     }
 
     /**
@@ -42,26 +42,9 @@ class PaymentPeriods implements PaymentPeriodsInterface
         $this->periods[$sequenceNo] = $period;
     }
 
-    /**
-     * @param int $calculationMode
-     * @return array
-     */
-    public function getPeriodsLengths(int $calculationMode = self::CALCULATION_MODE_AVERAGE): array
+    public function getAvgPeriodLength(): float
     {
-        $periodsLengths = array();
-
-        /** @var PeriodInterface $period */
-        foreach ($this->getPeriods() as $period) {
-            $length = $period->getLength();
-
-            if ($calculationMode == self::CALCULATION_MODE_AVERAGE)
-            {
-                $length = $this->averagePeriodLenght;
-            }
-            $periodsLengths[$period->getSequenceNo()] = $length;
-        }
-
-        return $periodsLengths;
+        return $this->averagePeriodLenght;
     }
 
     /**

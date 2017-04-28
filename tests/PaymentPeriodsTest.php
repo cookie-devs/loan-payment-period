@@ -4,7 +4,6 @@ namespace Kauri\Loan\Test;
 
 
 use Kauri\Loan\PaymentPeriods;
-use Kauri\Loan\PaymentPeriodsInterface;
 use Kauri\Loan\Period;
 use Kauri\Loan\PeriodInterface;
 use PHPUnit\Framework\TestCase;
@@ -33,34 +32,12 @@ class PaymentPeriodsTest extends TestCase
         $this->assertEquals($noOfPayments, $periodsCollection->getNoOfPeriods());
         $this->assertTrue(!empty($periodsCollection->getPeriods()));
 
-        foreach ($periodsCollection->getPeriodsLengths(PaymentPeriodsInterface::CALCULATION_MODE_AVERAGE) as $k => $periodLength) {
-            $this->assertEquals($averagePeriodLength, $periodLength);
-        }
+        foreach ($periodsCollection as $k => $period) {
+            $this->assertEquals($averagePeriodLength, $period->getAvgLength());
+            $this->assertEquals($averagePeriodLength, $period->getLength($period::LENGTH_MODE_AVG));
 
-        foreach ($periodsCollection->getPeriodsLengths(PaymentPeriodsInterface::CALCULATION_MODE_EXACT) as $k => $periodLength) {
-            $this->assertEquals($paymentPeriods[$k], $periodLength);
-        }
-    }
-
-    /**
-     * @dataProvider periodsData
-     * @param int $averagePeriodLength
-     * @param array $paymentPeriods
-     */
-    public function testPeriod(int $averagePeriodLength, array $paymentPeriods)
-    {
-        $periodsCollection = new PaymentPeriods($averagePeriodLength);
-
-        foreach ($paymentPeriods as $periodLength) {
-            $periodMock = $this->getMockPeriod($periodLength);
-            $periodsCollection->add($periodMock);
-        }
-
-        $periods = $periodsCollection->getPeriods();
-
-        /** @var PeriodInterface $period */
-        foreach ($periods as $period) {
-            $this->assertEquals($paymentPeriods[$period->getSequenceNo()], $period->getLength());
+            $this->assertEquals($paymentPeriods[$period->getSequenceNo()], $period->getLength($period::LENGTH_MODE_EXACT));
+            $this->assertEquals($paymentPeriods[$period->getSequenceNo()], $period->getExactLength());
         }
     }
 

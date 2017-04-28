@@ -7,6 +7,7 @@ use Kauri\Loan\PaymentPeriodsFactory;
 use Kauri\Loan\PaymentPeriodsInterface;
 use Kauri\Loan\PaymentScheduleConfig;
 use Kauri\Loan\PaymentScheduleFactory;
+use Kauri\Loan\PeriodInterface;
 use PHPUnit\Framework\TestCase;
 
 
@@ -35,18 +36,19 @@ class PaymentPeriodsFactoryTest extends TestCase
         $schedule = PaymentScheduleFactory::generate($config);
         $paymentPeriods = PaymentPeriodsFactory::generate($schedule);
 
+        /**
+         * @var  $no
+         * @var PeriodInterface $period
+         */
         foreach ($paymentPeriods->getPeriods() as $no => $period) {
             $this->assertEquals($period->getEnd()->format('Y-m-d'), $endDates[$no]);
             $this->assertEquals($period->getStart()->format('Y-m-d'), $startDates[$no]);
-            $this->assertEquals($period->getLength(), $expectedPeriodsLengthsExact[$no]);
-        }
 
-        foreach ($paymentPeriods->getPeriodsLengths(PaymentPeriodsInterface::CALCULATION_MODE_EXACT) as $k => $item) {
-            $this->assertEquals($expectedPeriodsLengthsExact[$k], $item);
-        }
+            $this->assertEquals($expectedPeriodsLengthsExact[$no], $period->getLength($period::LENGTH_MODE_EXACT));
+            $this->assertEquals($expectedPeriodsLengthsExact[$no], $period->getExactLength());
 
-        foreach ($paymentPeriods->getPeriodsLengths(PaymentPeriodsInterface::CALCULATION_MODE_AVERAGE) as $k => $item) {
-            $this->assertEquals($expectedPeriodsLengthsAverage[$k], $item);
+            $this->assertEquals($expectedPeriodsLengthsAverage[$no], $period->getLength($period::LENGTH_MODE_AVG));
+            $this->assertEquals($expectedPeriodsLengthsAverage[$no], $period->getAvgLength());
         }
     }
 

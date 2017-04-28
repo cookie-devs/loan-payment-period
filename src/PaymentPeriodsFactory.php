@@ -17,6 +17,7 @@ class PaymentPeriodsFactory implements PaymentPeriodsFactoryInterface
      */
     public static function generate(PaymentScheduleInterface $paymentSchedule): PaymentPeriodsInterface
     {
+
         $periods = new PaymentPeriods($paymentSchedule->getConfig()->getAverageIntervalLength());
 
         $periodStart = clone $paymentSchedule->getConfig()->getStartDate();
@@ -25,7 +26,7 @@ class PaymentPeriodsFactory implements PaymentPeriodsFactoryInterface
             $periodStart = self::calculatePeriodStart($periodStart);
             $periodEnd = self::calculatePeriodEnd($paymentDate);
 
-            $period = new Period($periodStart, $periodEnd);
+            $period = new Period($periodStart, $periodEnd, $periods->getAvgPeriodLength());
             $periods->add($period, $paymentNo);
 
             $periodStart = clone $paymentDate;
