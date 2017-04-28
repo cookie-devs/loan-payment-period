@@ -4,7 +4,6 @@ namespace Kauri\Loan\Test;
 
 
 use Kauri\Loan\PaymentPeriods;
-use Kauri\Loan\PaymentPeriodsInterface;
 use Kauri\Loan\Period;
 use Kauri\Loan\PeriodInterface;
 use PHPUnit\Framework\TestCase;
@@ -26,41 +25,21 @@ class PaymentPeriodsTest extends TestCase
         $this->assertTrue(empty($periodsCollection->getPeriods()));
 
         foreach ($paymentPeriods as $periodLength) {
-            $periodMock = $this->getMockPeriod($periodLength);
+            $periodMock = $this->getMockPeriod($periodLength, $averagePeriodLength);
             $periodsCollection->add($periodMock);
         }
 
         $this->assertEquals($noOfPayments, $periodsCollection->getNoOfPeriods());
         $this->assertTrue(!empty($periodsCollection->getPeriods()));
 
-        foreach ($periodsCollection->getPeriodsLengths(PaymentPeriodsInterface::CALCULATION_MODE_AVERAGE) as $k => $periodLength) {
-            $this->assertEquals($averagePeriodLength, $periodLength);
-        }
-
-        foreach ($periodsCollection->getPeriodsLengths(PaymentPeriodsInterface::CALCULATION_MODE_EXACT) as $k => $periodLength) {
-            $this->assertEquals($paymentPeriods[$k], $periodLength);
-        }
-    }
-
-    /**
-     * @dataProvider periodsData
-     * @param int $averagePeriodLength
-     * @param array $paymentPeriods
-     */
-    public function testPeriod(int $averagePeriodLength, array $paymentPeriods)
-    {
-        $periodsCollection = new PaymentPeriods($averagePeriodLength);
-
-        foreach ($paymentPeriods as $periodLength) {
-            $periodMock = $this->getMockPeriod($periodLength);
-            $periodsCollection->add($periodMock);
-        }
-
-        $periods = $periodsCollection->getPeriods();
-
-        /** @var PeriodInterface $period */
-        foreach ($periods as $period) {
-            $this->assertEquals($paymentPeriods[$period->getSequenceNo()], $period->getLength());
+        /**
+         * @var  $k
+         * @var PeriodInterface $period
+         */
+        foreach ($periodsCollection->getPeriods() as $no => $period) {
+            $this->assertEquals($no, $period->getSequenceNo());
+            $this->assertEquals($averagePeriodLength, $period->getAvgLength());
+            $this->assertEquals($paymentPeriods[$period->getSequenceNo()], $period->getExactLength());
         }
     }
 
@@ -76,15 +55,17 @@ class PaymentPeriodsTest extends TestCase
      * @param $length
      * @return PeriodInterface
      */
-    private function getMockPeriod($length)
+    private function getMockPeriod($length, $averagePeriodLength)
     {
         $stub = $this->getMockBuilder(Period::class)
             ->disableOriginalConstructor()
-            ->setMethods(['getLength'])
+            ->setMethods(['getExactLength', 'getAvgLength'])
             ->getMock();
 
-        $stub->method('getLength')
+        $stub->method('getExactLength')
             ->willReturn($length);
+        $stub->method('getAvgLength')
+            ->willReturn($averagePeriodLength);
 
         return $stub;
     }

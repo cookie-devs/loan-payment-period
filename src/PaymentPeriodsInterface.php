@@ -11,15 +11,6 @@ namespace Kauri\Loan;
 interface PaymentPeriodsInterface
 {
     /**
-     * Exact payment with exact interest
-     */
-    const CALCULATION_MODE_EXACT = 1;
-    /**
-     * Annuity payment with annuity interest
-     */
-    const CALCULATION_MODE_AVERAGE = 2;
-
-    /**
      * PaymentPeriodsInterface constructor.
      * @param int $averagePeriod
      */
@@ -32,10 +23,9 @@ interface PaymentPeriodsInterface
     public function add(PeriodInterface $period, int $sequenceNo = null): void;
 
     /**
-     * @param int $calculationMode
-     * @return array
+     * @return float
      */
-    public function getPeriodsLengths(int $calculationMode = self::CALCULATION_MODE_AVERAGE): array;
+    public function getAvgPeriodLength(): float;
 
     /**
      * @return array
